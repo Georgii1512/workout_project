@@ -1,0 +1,1 @@
+The workout_project is my pet-project to consolidate knowledge of django framework at practice. The goal is creating web-app to track sport activities. The .gitignore file created by gitignore.io for python, PyCharm and django.
