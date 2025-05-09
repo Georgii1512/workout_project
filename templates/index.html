@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    {% load static %}
+</head>
+<body>
+
+<h1>Index</h1>
+<button id="btn">Greet</button>
+<p id="p">Hi</p>
+
+
+<script src="{% static 'jquery-3.7.1.js' %}"></script>
+<script>
+    $(document).ready(function () {
+            $("#btn").on("click", function () {
+                $("#p").text('Hello, world!!');
+            });
+        }
+    );
+
+</script>
+
+</body>
+</html>
