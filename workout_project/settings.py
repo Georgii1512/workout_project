@@ -42,8 +42,9 @@ INSTALLED_APPS = [
     'users',
     'workouts',
 
-    'django_bootstrap5',
+    'bootstrap5',
     'crispy_forms',
+    'crispy_bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -141,3 +142,9 @@ MEDIA_URL = '/media/'
 
 # Users
 AUTH_USER_MODEL = 'users.User'
+LOGIN_REDIRECT_URL = 'users:users_list'
+LOGOUT_REDIRECT_URL = 'index'
+
+# Crispy
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"

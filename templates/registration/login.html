@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_filters %}
+{% load bootstrap5 %}
+
+{% block title %}
+	Login
+{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center mt-3">
+        <div class="col-4">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="row justify-content-between px-3">
+                    <button class="btn btn-success col-2" type="submit">Log in</button>
+                <p class="col-3"><a href="{% url 'index' %}"
+                                                    class="link-opacity-100">To main page</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

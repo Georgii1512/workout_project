@@ -1,27 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Index</title>
-    {% load static %}
-</head>
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+
+{% block title %}
+    Index
+{% endblock %}
+
 <body>
 
-<h1>Index</h1>
-<button id="btn">Greet</button>
-<p id="p">Hi</p>
+{% block content %}
+    <ul>
+        <li>
+            <a href="{% url 'login' %}">Log In</a>
+        </li>
+        <li>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button>Log Out</button>
+            </form>
+        </li>
+        <li>
+            <a href="{% url 'users:users_list' %}">Users</a>
+        </li>
+    </ul>
+
+    <h1>Hi, {{ user.username|default:"Guest" }}</h1>
+
+{% endblock %}
 
 
-<script src="{% static 'jquery-3.7.1.js' %}"></script>
-<script>
-    $(document).ready(function () {
-            $("#btn").on("click", function () {
-                $("#p").text('Hello, world!!');
-            });
-        }
-    );
+{% block script %}
 
-</script>
+{% endblock %}
 
 </body>
-</html>
