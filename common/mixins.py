@@ -6,7 +6,7 @@ class VerifyRequestUserMixin(LoginRequiredMixin, UserPassesTestMixin, ABC):
     """
     Mixin to ensure that the requesting user is associated with the object. Need to retrieve user or user identifier
     from the request and compare it with object field that refers to the associated user. Child classes must implement
-    the `get_verification()` method.
+    the `is_requester_associated()` method.
     """
 
     @abstractmethod
@@ -16,7 +16,8 @@ class VerifyRequestUserMixin(LoginRequiredMixin, UserPassesTestMixin, ABC):
         associated user.
         :return: True if the requesting user is associated with the object, False otherwise.
         """
-        pass
+        raise NotImplementedError("Child classes must implement the `is_requester_associated()` method.")
 
     def test_func(self):
         return self.is_requester_associated()
+
