@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+
+{% block title %}
+    User detail
+{% endblock %}
+{% block navbar %}
+
+{% endblock %}
+{% block content %}
+    <div class="content-container">
+        <div class="row justify-content-center">
+            <div class="col-lg-4">
+                <h2 class="h2 text-center mt-2 mb-3">Update {{ user.username }}`s profile</h2>
+                <form method="post" enctype="multipart/form-data" class="input-form p-2 mb-3" novalidate>
+                    {% csrf_token %}
+                    <div class="text-center mb-3">
+                        <img class="img-fluid img-thumbnail" src="{{ user.avatar.url }}" alt="Avatar"><br>
+                        <label class="form-label">Current {{ user.username }} avatar.</label>
+                    </div>
+                    {{ form|crispy }}
+                    <div class="row justify-content-between px-3">
+                        <button type="submit" class="btn btn-success col-2">Update</button>
+                        <p class="col-2"><a href="{% url 'users:user_detail' user.pk %}"
+                                            class="link-opacity-100">Back</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
