@@ -1,67 +1,136 @@
 from django.db import models
 from users.models import User
+from django.utils.text import slugify
 
-
-# Create your models here.
 
 class ExercisesBank(models.Model):
-    name = models.CharField(max_length=100)
-    owner = models.ForeignKey(
-        to=User, related_name='exercises_banks', related_query_name='exercises_bank', on_delete=models.CASCADE
+    name = models.CharField(
+        max_length=100,
+        help_text="Enter a unique name for this exercise bank."
     )
-    description = models.TextField(blank=True, default='no description', max_length=500)
+    owner = models.ForeignKey(
+        to=User,
+        related_name='exercises_banks',
+        related_query_name='exercises_bank',
+        on_delete=models.CASCADE,
+        help_text="The user who owns this exercise bank."
+    )
+    description = models.TextField(
+        blank=True,
+        default='',
+        help_text="Provide an optional description for this exercise bank."
+    )
+    slug = models.SlugField(
+        unique=True,
+        help_text="Unique URL-friendly identifier for this exercise bank."
+    )
 
     class Meta:
-        verbose_name = 'exercises bank'
-        verbose_name_plural = 'exercises banks'
-        ordering = '-id'
-        constraints = models.UniqueConstraint(
-            fields=('name', 'owner'), name='unique_for_owner'
-        )
+        verbose_name = 'ExercisesBank'
+        verbose_name_plural = 'ExercisesBanks'
+        ordering = ['-id']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'owner'],
+                name='unique_bank_name_for_owner'
+            )
+        ]
 
     def __str__(self):
         return f"{self.name}"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(f"{self.name}-{self.owner.username}")
+        return super().save(*args, **kwargs)
 
 
 class ExerciseCategory(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True, default='no description', max_length=300)
+    name = models.CharField(
+        max_length=100,
+        help_text="Enter a name for this exercise category."
+    )
+    description = models.TextField(
+        blank=True,
+        default='',
+        help_text="Provide an optional description for this category."
+    )
     exercises_bank = models.ForeignKey(
-        to=ExercisesBank, on_delete=models.CASCADE, related_name='exercise_categories',
-        related_query_name='exercise_category'
+        to=ExercisesBank,
+        on_delete=models.CASCADE,
+        related_name='exercise_categories',
+        related_query_name='exercise_category',
+        help_text="Select the exercise bank this category belongs to."
+    )
+    slug = models.SlugField(
+        unique=True,
+        help_text="Unique URL-friendly identifier for this category."
     )
 
     class Meta:
-        verbose_name = 'exercise category'
-        verbose_name_plural = 'exercise categories'
-        ordering = 'name'
-        constraints = models.UniqueConstraint(
-            fields=('name', 'exercises_bank')
-        )
+        verbose_name = 'ExerciseCategory'
+        verbose_name_plural = 'ExerciseCategories'
+        ordering = ['name']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'exercises_bank'],
+                name='unique_for_exercises_bank'
+            )
+        ]
 
     def __str__(self):
         return f"{self.name}"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(f"{self.name}-{self.exercises_bank.name}")
+        return super().save(*args, **kwargs)
 
 
 class Exercise(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True, default='no description', max_length=300, unique=True)
-    exercise_category = models.ForeignKey(to=ExerciseCategory, on_delete=models.CASCADE, related_name='exercise')
-    instruction_link = models.URLField(blank=True)
-    task_bank = models.ForeignKey(
-        to=ExercisesBank, on_delete=models.CASCADE, related_name='exercises', related_query_name='exercise'
+    name = models.CharField(
+        max_length=100,
+        help_text="Enter the name of the exercise."
+    )
+    description = models.TextField(
+        blank=True,
+        default='',
+        help_text="Provide an optional description for this exercise."
+    )
+    exercise_category = models.ForeignKey(
+        to=ExerciseCategory,
+        on_delete=models.CASCADE,
+        related_name='exercise',
+        help_text="Select the category this exercise belongs to."
+    )
+    instruction_link = models.URLField(
+        blank=True,
+        null=True,
+        help_text="Provide a URL to instructions or a demonstration video."
+    )
+    slug = models.SlugField(
+        unique=True,
+        help_text="Unique URL-friendly identifier for this exercise."
     )
 
     class Meta:
-        verbose_name = 'exercise'
-        verbose_name_plural = 'exercises'
-        ordering = 'name'
-        constraints = models.UniqueConstraint(
-            fields=('name', 'exercise_category', 'instruction_link')
-        )
+        verbose_name = 'Exercise'
+        verbose_name_plural = 'Exercise'
+        ordering = ['name']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'exercise_category', 'instruction_link'],
+                name='unique_for_category'
+            )
+        ]
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.name}-{self.exercise_category.name}"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(f"{self.name}")
+        return super().save(*args, **kwargs)
 
 
 class TrainingPlan(models.Model):
@@ -70,66 +139,160 @@ class TrainingPlan(models.Model):
         PROTECTED = 'PROTECTED', 'Protected'
         PUBLIC = 'PUBLIC', 'Public'
 
-    name = models.CharField(max_length=100)
-    description = models.TextField(max_length=500, blank=True, default='no description')
+    name = models.CharField(
+        max_length=100,
+        help_text="Enter a name for the training plan."
+    )
+    description = models.TextField(
+        blank=True,
+        default='',
+        help_text="Provide an optional description for this training plan."
+    )
     owner = models.ForeignKey(
-        to=User, on_delete=models.CASCADE, related_name='training_plans', related_query_name='training_plan'
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='training_plans',
+        related_query_name='training_plan',
+        help_text="Select the user who owns this training plan."
     )
     access_status = models.CharField(
-        max_length=20, choices=AccessStatuses.choices, default=AccessStatuses.PUBLIC
+        max_length=20,
+        choices=AccessStatuses.choices,
+        default=AccessStatuses.PUBLIC,
+        help_text="Set the access level for this training plan."
+    )
+    slug = models.SlugField(
+        unique=True,
+        help_text="Unique URL-friendly identifier for this training plan."
     )
 
     class Meta:
-        verbose_name = 'training plan'
-        verbose_name_plural = 'training plans'
-        ordering = 'name'
-        constraints = models.UniqueConstraint(
-            fields=('name', 'description', 'owner')
-        )
+        verbose_name = 'TrainingPlan'
+        verbose_name_plural = 'TrainingPlans'
+        ordering = ['name']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'owner'],
+                name='unique_plan_name_for_owner'
+            )
+        ]
 
     def __str__(self):
         return f"{self.name}"
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(f"{self.name}-{self.owner.username}")
+        return super().save(*args, **kwargs)
+
 
 class TrainingDay(models.Model):
-    description = models.TextField(max_length=200, default='no description')
+    description = models.TextField(
+        default='',
+        help_text="Provide a description for this training day."
+    )
     training_plan = models.ForeignKey(
-        to=TrainingPlan, on_delete=models.CASCADE, related_name='training_days', related_query_name='training_day'
+        to=TrainingPlan,
+        on_delete=models.CASCADE,
+        related_name='training_days',
+        related_query_name='training_day',
+        help_text="Select the training plan this day is part of."
     )
     tasks = models.ManyToManyField(
-        to=Exercise, through='DailyExercise', related_name='training_days', related_query_name='training_day'
+        to=Exercise,
+        through='DailyExercise',
+        related_name='training_days',
+        related_query_name='training_day',
+        help_text="Exercises scheduled for this training day."
     )
-    order = models.PositiveSmallIntegerField()
-    # appointment_date = models.DateTimeField()
-    # training_duration = models.DurationField()
+    order = models.PositiveSmallIntegerField(
+        help_text="Specify the sequence order of this training day."
+    )
+    slug = models.SlugField(
+        unique=True,
+        help_text="Unique URL-friendly identifier for this training day."
+    )
 
     class Meta:
-        verbose_name = 'training day'
-        verbose_name_plural = 'training days'
-        ordering = 'order'
-        constraints = models.UniqueConstraint(
-            fields=('training_plan', 'order')
-        )
+        verbose_name = 'TrainingDay'
+        verbose_name_plural = 'TrainingDays'
+        ordering = ['order']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['training_plan', 'order'],
+                name='unique_for_training_plan'
+            )
+        ]
 
     def __str__(self):
         return f"{self.training_plan.name}, day {self.order}"
 
+    def __lt__(self, other):
+        if not isinstance(other, TrainingDay):
+            return NotImplemented
+        return self.order < other.order
+
+    def __gt__(self, other):
+        if not isinstance(other, TrainingDay):
+            return NotImplemented
+        return self.order > other.order
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(f"{self.training_plan.name}-{self.order}day")
+        return super().save(*args, **kwargs)
+
 
 class DailyExercise(models.Model):
     exercise = models.ForeignKey(
-        to=Exercise, on_delete=models.CASCADE, related_name='daily_exercises', related_query_name='daily_exercise'
+        to=Exercise,
+        on_delete=models.CASCADE,
+        related_name='daily_exercises',
+        related_query_name='daily_exercise',
+        help_text="Select the exercise for this daily entry."
     )
     day = models.ForeignKey(
-        to=TrainingDay, on_delete=models.CASCADE, related_name='daily_exercises', related_query_name='daily_exercise'
+        to=TrainingDay,
+        on_delete=models.CASCADE,
+        related_name='daily_exercises',
+        related_query_name='daily_exercise',
+        help_text="Select the training day this exercise is scheduled for."
     )
-    repetitions = models.PositiveSmallIntegerField()
-    work_weight = models.PositiveSmallIntegerField(blank=True, null=True)
-    order = models.CharField()
+    repetitions = models.PositiveSmallIntegerField(
+        help_text="Number of repetitions for this exercise."
+    )
+    work_weight = models.DecimalField(
+        blank=True,
+        null=True,
+        max_digits=3,
+        decimal_places=2,
+        help_text="Planned weight to be used for this exercise."
+    )
+    actual_used_weight = models.DecimalField(
+        blank=True,
+        null=True,
+        max_digits=3,
+        decimal_places=2,
+        help_text="Actual weight used during the exercise."
+    )
+    order = models.PositiveSmallIntegerField(
+        help_text="Specify the sequence order of this exercise within the day."
+    )
 
     class Meta:
-        verbose_name = 'daily exercise'
-        verbose_name_plural = 'daily exercises'
-        ordering = 'order'
+        verbose_name = 'DailyExercise'
+        verbose_name_plural = 'DailyExercises'
+        ordering = ['order']
 
     def __str__(self):
         return f"Day {self.day.order}, {self.exercise.name}"
+
+    def __lt__(self, other):
+        if not isinstance(other, DailyExercise):
+            return NotImplemented
+        return self.order < other.order
+
+    def __gt__(self, other):
+        if not isinstance(other, DailyExercise):
+            return NotImplemented
+        return self.order > other.order
