@@ -1,0 +1,87 @@
+from django import forms
+from django.forms import ModelForm, inlineformset_factory
+from .models import (
+    ExercisesBank,
+    ExerciseCategory,
+    Exercise,
+    TrainingPlan,
+    TrainingDay,
+    DailyExercise,
+)
+
+
+class ExercisesBankForm(ModelForm):
+    class Meta:
+        model = ExercisesBank
+        fields = ['name', 'owner', 'description']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+        }
+
+
+class ExerciseCategoryForm(ModelForm):
+    class Meta:
+        model = ExerciseCategory
+        fields = ['name', 'description', 'exercises_bank']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+        }
+
+
+class ExerciseForm(ModelForm):
+    class Meta:
+        model = Exercise
+        fields = ['name', 'description', 'exercise_category', 'instruction_link']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+        }
+
+
+class TrainingPlanForm(ModelForm):
+    class Meta:
+        model = TrainingPlan
+        fields = ['name', 'description', 'owner', 'access_status']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+        }
+
+
+class TrainingDayForm(ModelForm):
+    class Meta:
+        model = TrainingDay
+        fields = ['description', 'training_plan', 'order']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+        }
+
+
+class DailyExerciseForm(ModelForm):
+    class Meta:
+        model = DailyExercise
+        fields = ['exercise', 'day', 'repetitions', 'work_weight', 'actual_used_weight', 'order']
+        widgets = {
+            'work_weight': forms.NumberInput(attrs={'step': '0.01'}),
+            'actual_used_weight': forms.NumberInput(attrs={'step': '0.01'}),
+        }
+
+
+# formsets
+TrainingDayFormset = inlineformset_factory(TrainingPlan,
+                                           TrainingDay,
+                                           TrainingDayForm,
+                                           can_delete=True,
+                                           extra=1
+                                           )
+
+DailyExerciseFormset = inlineformset_factory(TrainingDay,
+                                             DailyExercise,
+                                             can_delete=True,
+                                             extra=1
+                                             )
+
+ExerciseFormset = inlineformset_factory(
+    ExercisesBank,
+    Exercise,
+    can_delete=True,
+    extra=1
+)
