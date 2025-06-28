@@ -1,16 +1,16 @@
-from django.forms.models import ModelForm
-from .models import User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 
-class UserCreateForm(ModelForm):
+class UserCreateForm(UserCreationForm):
     class Meta:
-        model = User
-        fields = ['avatar', 'username', 'password']
+        model = get_user_model()
+        fields = ['avatar', 'username', 'password1', 'password2']
 
 
-class UserUpdateForm(ModelForm):
+class UserUpdateForm(UserChangeForm):
     class Meta:
-        model = User
+        model = get_user_model()
         fields = ['avatar', 'username']
 
     def clean_avatar(self):
