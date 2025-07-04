@@ -1,31 +1,19 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    {{ exercise_bank.name }}
+    My exercises banks
 {% endblock %}
+
 
 {% block content %}
     <div class="container-sm my-4 text-center">
         <h2 class="h2">
-            {{ exercise_bank.name }}
+            <a href="{% url 'workouts:exercises_bank_create' %}">Create a new bank</a>
         </h2>
-    <p class="h5">
-        {{ exercise_bank.description }}
-    </p>
-    <a href="{% url 'workouts:exercises_bank_update' exercise_bank.pk %}">
-        <p>
-            Update bank
-        </p>
-    </a>
-    <a class="danger" href="{% url 'workouts:exercises_bank_delete' exercise_bank.pk %}">
-        <p>
-            Delete bank
-        </p>
-    </a>
         <div class="row justify-content-center">
             <div class="col-sm-6 d-flex flex-wrap">
                 <ul>
-                    {% for exercise_category in exercise_banks.exercise_categories %}
+                    {% for exercise_bank in exercise_banks %}
                         <li>
                             <a href="{% url 'workouts:exercises_bank_detail' exercise_bank.pk %}">
                                 <p class="p">{{ exercise_bank.name }}</p>
@@ -33,7 +21,6 @@
                         </li>
                     {% endfor %}
                 </ul>
-
             </div>
         </div>
     </div>

@@ -32,7 +32,7 @@ class OwnerRequiredMixin(VerifyRequestUserMixin, SingleObjectMixin):
     Assumes that the view has a `get_object()` method that returns the object.
     """
 
-    owner_field = 'user'  # Default field name that links the object to its owner
+    owner_field = 'owner'  # Default field name that links the object to its owner
     request: HttpRequest
 
     def is_requester_associated(self) -> bool:

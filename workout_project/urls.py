@@ -28,6 +28,7 @@ urlpatterns = [
     path('', IndexView.as_view(), name='index'),
     path('users/', include('users.urls', namespace='users')),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('workouts/', include('workouts.urls.urls', namespace='workouts')),
 ]
 
 if settings.DEBUG:

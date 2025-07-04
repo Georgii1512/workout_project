@@ -13,7 +13,7 @@ from .models import (
 class ExercisesBankForm(ModelForm):
     class Meta:
         model = ExercisesBank
-        fields = ['name', 'owner', 'description']
+        fields = ['name', 'description']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3}),
         }
@@ -66,22 +66,22 @@ class DailyExerciseForm(ModelForm):
 
 
 # formsets
-TrainingDayFormset = inlineformset_factory(TrainingPlan,
-                                           TrainingDay,
-                                           TrainingDayForm,
-                                           can_delete=True,
-                                           extra=1
-                                           )
-
-DailyExerciseFormset = inlineformset_factory(TrainingDay,
-                                             DailyExercise,
-                                             can_delete=True,
-                                             extra=1
-                                             )
-
-ExerciseFormset = inlineformset_factory(
-    ExercisesBank,
-    Exercise,
-    can_delete=True,
-    extra=1
-)
+# TrainingDayFormset = inlineformset_factory(TrainingPlan,
+#                                            TrainingDay,
+#                                            TrainingDayForm,
+#                                            can_delete=True,
+#                                            extra=1
+#                                            )
+#
+# DailyExerciseFormset = inlineformset_factory(TrainingDay,
+#                                              DailyExercise,
+#                                              can_delete=True,
+#                                              extra=1
+#                                              )
+#
+# ExerciseFormset = inlineformset_factory(
+#     ExercisesBank,
+#     Exercise,
+#     can_delete=True,
+#     extra=1
+# )

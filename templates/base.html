@@ -13,19 +13,20 @@
 </head>
 <body>
 
-	<div class="container-fluid p-2 bg-dark">
+<div class="container-fluid p-2 bg-dark">
     <nav class="nav">
         <a class="nav-link active" href="{% url 'index' %}">To main page</a>
+        <a class="nav-link active" href="{% url 'workouts:exercises_bank_list' %}">Exercises bank</a>
         {#  Next elements should be added after element with a ms-auto class.  #}
         <a class="nav-link active ms-auto">Hello, {{ user.username|default:"Guest" }}!</a>
         <a class="nav-link active" href="{% url 'admin:index' %}">To admin panel</a>
         {% if user.is_authenticated %}
-        	<form method="post" action="{% url 'logout' %}">
+            <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button class='form-control btn btn-outline-primary' type="submit">Log out</button>
             </form>
         {% else %}
-        	<a class="nav-link active" href="{% url 'login' %}">Log in</a>
+            <a class="nav-link active" href="{% url 'login' %}">Log in</a>
         {% endif %}
     </nav>
 </div>
