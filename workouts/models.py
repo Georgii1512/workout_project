@@ -1,6 +1,8 @@
 from django.db import models
-from users.models import User
 from django.utils.text import slugify
+import workout_project.settings
+
+User = workout_project.settings.AUTH_USER_MODEL
 
 
 class ExerciseCategory(models.Model):
@@ -21,19 +23,14 @@ class ExerciseCategory(models.Model):
         to=User,
         on_delete=models.CASCADE,
         related_name='exercise_categories',
-        related_query_name='exercise_category'
+        related_query_name='exercise_category',
     )
 
     class Meta:
         verbose_name = 'ExerciseCategory'
         verbose_name_plural = 'ExerciseCategories'
         ordering = ['name']
-        constraints = [
-            models.UniqueConstraint(
-                fields=['name', 'exercises_bank'],
-                name='unique_for_exercises_bank'
-            )
-        ]
+
 
     def __str__(self):
         return f"{self.name}"
@@ -47,7 +44,7 @@ class ExerciseCategory(models.Model):
 class Exercise(models.Model):
     name = models.CharField(
         max_length=100,
-        help_text="Enter the name of the exercise."
+        help_text="Enter the name of the exercise.",
     )
     description = models.TextField(
         blank=True,
@@ -64,8 +61,8 @@ class Exercise(models.Model):
     owner = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
-        related_name='exercise_categories',
-        related_query_name='exercise_category'
+        related_name='exercises',
+        related_query_name='exercise',
     )
     instruction_link = models.URLField(
         blank=True,
@@ -79,7 +76,7 @@ class Exercise(models.Model):
 
     class Meta:
         verbose_name = 'Exercise'
-        verbose_name_plural = 'Exercise'
+        verbose_name_plural = 'Exercises'
         ordering = ['name']
         constraints = [
             models.UniqueConstraint(
@@ -117,7 +114,7 @@ class TrainingPlan(models.Model):
         on_delete=models.CASCADE,
         related_name='training_plans',
         related_query_name='training_plan',
-        help_text="Select the user who owns this training plan."
+        help_text="Select the user who owns this training plan.",
     )
     access_status = models.CharField(
         max_length=20,
@@ -179,8 +176,8 @@ class TrainingDay(models.Model):
     owner = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
-        related_name='exercise_categories',
-        related_query_name='exercise_category'
+        related_name='training_days',
+        related_query_name='training_day',
     )
 
     class Meta:

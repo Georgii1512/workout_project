@@ -1,7 +1,6 @@
 from django import forms
 from django.forms import ModelForm, inlineformset_factory
 from .models import (
-    ExercisesBank,
     ExerciseCategory,
     Exercise,
     TrainingPlan,
@@ -10,19 +9,10 @@ from .models import (
 )
 
 
-class ExercisesBankForm(ModelForm):
-    class Meta:
-        model = ExercisesBank
-        fields = ['name', 'description']
-        widgets = {
-            'description': forms.Textarea(attrs={'rows': 3}),
-        }
-
-
 class ExerciseCategoryForm(ModelForm):
     class Meta:
         model = ExerciseCategory
-        fields = ['name', 'description', 'exercises_bank']
+        fields = ['name', 'description']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3}),
         }
