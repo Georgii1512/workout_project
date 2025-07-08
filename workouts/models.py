@@ -3,48 +3,6 @@ from users.models import User
 from django.utils.text import slugify
 
 
-class ExercisesBank(models.Model):
-    name = models.CharField(
-        max_length=100,
-        help_text="Enter a unique name for this exercise bank."
-    )
-    owner = models.ForeignKey(
-        to=User,
-        related_name='exercises_banks',
-        related_query_name='exercises_bank',
-        on_delete=models.CASCADE,
-        help_text="The user who owns this exercise bank."
-    )
-    description = models.TextField(
-        blank=True,
-        default='',
-        help_text="Provide an optional description for this exercise bank."
-    )
-    slug = models.SlugField(
-        unique=True,
-        help_text="Unique URL-friendly identifier for this exercise bank."
-    )
-
-    class Meta:
-        verbose_name = 'ExercisesBank'
-        verbose_name_plural = 'ExercisesBanks'
-        ordering = ['-id']
-        constraints = [
-            models.UniqueConstraint(
-                fields=['name', 'owner'],
-                name='unique_bank_name_for_owner'
-            )
-        ]
-
-    def __str__(self):
-        return f"{self.name}"
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(f"{self.name}-{self.owner.username}")
-        return super().save(*args, **kwargs)
-
-
 class ExerciseCategory(models.Model):
     name = models.CharField(
         max_length=100,
@@ -55,16 +13,15 @@ class ExerciseCategory(models.Model):
         default='',
         help_text="Provide an optional description for this category."
     )
-    exercises_bank = models.ForeignKey(
-        to=ExercisesBank,
-        on_delete=models.CASCADE,
-        related_name='exercise_categories',
-        related_query_name='exercise_category',
-        help_text="Select the exercise bank this category belongs to."
-    )
     slug = models.SlugField(
         unique=True,
         help_text="Unique URL-friendly identifier for this category."
+    )
+    owner = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='exercise_categories',
+        related_query_name='exercise_category'
     )
 
     class Meta:
@@ -83,7 +40,7 @@ class ExerciseCategory(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(f"{self.name}-{self.exercises_bank.name}")
+            self.slug = slugify(f"{self.name}")
         return super().save(*args, **kwargs)
 
 
@@ -100,8 +57,15 @@ class Exercise(models.Model):
     exercise_category = models.ForeignKey(
         to=ExerciseCategory,
         on_delete=models.CASCADE,
-        related_name='exercise',
+        related_name='exercises',
+        related_query_name='exercise',
         help_text="Select the category this exercise belongs to."
+    )
+    owner = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='exercise_categories',
+        related_query_name='exercise_category'
     )
     instruction_link = models.URLField(
         blank=True,
@@ -211,6 +175,12 @@ class TrainingDay(models.Model):
     slug = models.SlugField(
         unique=True,
         help_text="Unique URL-friendly identifier for this training day."
+    )
+    owner = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='exercise_categories',
+        related_query_name='exercise_category'
     )
 
     class Meta:
