@@ -37,7 +37,7 @@ class ExerciseCategory(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(f"{self.name}")
+            self.slug = slugify(f"{self.name}-{self.owner.pk}", allow_unicode=True)
         return super().save(*args, **kwargs)
 
 
@@ -90,7 +90,7 @@ class Exercise(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(f"{self.name}")
+            self.slug = slugify(f"{self.name}", allow_unicode=True)
         return super().save(*args, **kwargs)
 
 
@@ -143,7 +143,7 @@ class TrainingPlan(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(f"{self.name}-{self.owner.username}")
+            self.slug = slugify(f"{self.name}-{self.owner.username}", allow_unicode=True)
         return super().save(*args, **kwargs)
 
 
@@ -206,7 +206,7 @@ class TrainingDay(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(f"{self.training_plan.name}-{self.order}day")
+            self.slug = slugify(f"{self.training_plan.name}-{self.order}", allow_unicode=True)
         return super().save(*args, **kwargs)
 
 

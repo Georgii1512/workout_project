@@ -3,6 +3,7 @@ from .models import User
 from django.urls import reverse, reverse_lazy
 from common.mixins import VerifyRequestUserMixin
 from . import forms
+from workouts.models import ExerciseCategory
 
 
 # Create your views here.
@@ -46,7 +47,11 @@ class UserUpdateView(VerifyRequestUserMixin, UpdateView):
             return super().handle_no_permission()
 
 
-class UserDetailView(DetailView):
+class UserDetailView(VerifyRequestUserMixin, DetailView):
     template_name = 'users/user_detail.html'
     model = User
     context_object_name = 'user'
+
+    def is_requester_associated(self) -> bool:
+        return self.request.user == self.get_object()
+

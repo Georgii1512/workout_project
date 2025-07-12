@@ -1,10 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %}
+    {{ exercise_category.name }} details
+{% endblock %}
+{% block content %}
+    <div class="container my-4">
+    <div class="card shadow-sm mx-auto" style="max-width: 720px;">
+        <div class="card-header">
+            <h2 class="mb-0">{{ exercise_category.name }}</h2>
+        </div>
+        <div class="card-body">
+            {% if exercise_category.description %}
+                <p class="card-text">{{ exercise_category.description }}</p>
+            {% else %}
+                <p class="text-muted"><em>No description provided.</em></p>
+            {% endif %}
+            <hr>
+        </div>
+    </div>
+{% endblock %}

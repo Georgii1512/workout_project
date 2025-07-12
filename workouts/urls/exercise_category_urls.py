@@ -6,4 +6,5 @@ urlpatterns = [
     path('<int:pk>/', views.ExerciseCategoryDetailView.as_view(), name='exercise_category_detail'),
     path('<int:pk>/update/', views.ExerciseCategoryUpdateView.as_view(), name='exercise_category_update'),
     path('<int:pk>/delete/', views.ExerciseCategoryDeleteView.as_view(), name='exercise_category_delete'),
+    path('list/', views.ExerciseCategoryListView.as_view(), name='exercise_categories_list'),
 ]

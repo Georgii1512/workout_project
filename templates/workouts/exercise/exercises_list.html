@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    You exercises list
+{% endblock %}
+
+{% block content %}
+
+    <div class="container my-4 ">
+        <div class="row justify-content-center">
+            <div class="col-sm-12">
+                <p class="text-center text-dark">
+                    <a href="{% url 'workouts:exercise_create' %}" class="link-underline-primary">Create new
+                        exercise</a>
+                </p>
+                <p class="text-center text-dark">
+                    <a href="{% url 'workouts:exercise_category_create' %}" class="link-underline-primary">Create new
+                        exercise category</a>
+                </p>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-sm-12 d-flex flex-wrap">
+                <table class="table table-dark table-hover">
+                    <thead>
+                    <tr class="table-primary">
+                        <th scope="col">Name</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Link to instruction</th>
+                    </thead>
+                    <tbody>
+                    {% for exercise in exercises %}
+                        <tr class="table-secondary">
+                            <td>
+                                <p class="text-primary">
+                                    <a href="{% url 'workouts:exercise_detail' exercise.pk %}">{{ exercise.name }}</a>
+                                </p>
+                            </td>
+                            <td>
+                                <p class="text-primary">{{ exercise.exercise_category.name }}</p>
+                            </td>
+                        <td>
+                            {% if exercise.instruction_link %}
+                                <a href="{{ exercise.instruction_link }}" class="btn btn-outline-primary" target="_blank">
+                                    <i class="bi bi-link">View Instructions</i>
+                                </a>
+                                {% else %}
+                                <p class="text-warning-emphasis">No link provided</p>
+                            {% endif %}
+                        </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

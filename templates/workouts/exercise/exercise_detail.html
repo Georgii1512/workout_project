@@ -1,10 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %}
+    {{ exercise.name }} details
+{% endblock %}
+
+{% block content %}
+    <div class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title mb-0">{{ exercise.name }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <h5 class="text-muted">Category</h5>
+                            <p>{{ exercise.exercise_category.name }}</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5 class="text-muted">Description</h5>
+                            <p>{{ exercise.description|default:"No description provided" }}</p>
+                        </div>
+
+                        {% if exercise.instruction_link %}
+                            <div class="mb-4">
+                                <div class="text-center">
+                                        <iframe width="560" height="315"
+                                                src="{{ instruction_yt_url }}"
+                                                title="YouTube video player"
+                                                allow="fullscreen;">
+                                        </iframe>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="mt-4 d-flex justify-content-between">
+                            <a href="{% url 'workouts:exercises_list' %}" class="btn btn-secondary">
+                                Back to List
+                            </a>
+                            {% if exercise.owner == user %}
+                                <div>
+                                    <a href="{% url 'workouts:exercise_update' exercise.pk %}"
+                                       class="btn btn-warning me-2">Edit</a>
+                                    <a href="{% url 'workouts:exercise_delete' exercise.pk %}" class="btn btn-danger">Delete</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
