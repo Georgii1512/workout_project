@@ -2,7 +2,6 @@ from django.urls import reverse_lazy
 from django.views.generic import (CreateView, DetailView, DeleteView, ListView, UpdateView)
 from django.contrib.auth import mixins
 from workouts import forms, models
-from django.utils.text import slugify
 
 
 class ExerciseCreateView(mixins.LoginRequiredMixin, CreateView):
@@ -19,7 +18,7 @@ class ExerciseCreateView(mixins.LoginRequiredMixin, CreateView):
         :return:
         """
         form.instance.owner = self.request.user
-        form.instance.slug = slugify(f"{form.instance.name}-{self.request.user.pk}", allow_unicode=True)
+
         return super().form_valid(form)
 
 
@@ -30,6 +29,8 @@ class ExerciseDeleteView(mixins.LoginRequiredMixin,
     context_object_name = 'exercise'
     template_name = 'workouts/exercise/exercise_delete.html'
     success_url = reverse_lazy('workouts:exercises_list')
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
 
     def test_func(self):
         """
@@ -50,6 +51,8 @@ class ExerciseUpdateView(mixins.LoginRequiredMixin,
     context_object_name = 'exercise'
     form_class = forms.ExerciseForm
     template_name = 'workouts/exercise/exercise_update.html'
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
 
     def test_func(self):
         """
@@ -63,19 +66,22 @@ class ExerciseUpdateView(mixins.LoginRequiredMixin,
         return user == owner
 
     def get_success_url(self):
-        return reverse_lazy('workouts:exercise_detail', kwargs={'pk': self.get_object().pk})
+        return reverse_lazy('workouts:exercise_detail', kwargs={'slug': self.get_object().slug})
 
 
 class ExerciseDetailView(mixins.LoginRequiredMixin, DetailView):
     model = models.Exercise
     context_object_name = 'exercise'
     template_name = 'workouts/exercise/exercise_detail.html'
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         yt_embedded_base_link = 'https://www.youtube.com/embed/'
         video_id = self.get_object().instruction_link.split('v=')[-1]
         context['instruction_yt_url'] = yt_embedded_base_link + video_id
+
         return context
 
 

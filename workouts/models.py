@@ -1,6 +1,6 @@
 from django.db import models
-from django.utils.text import slugify
 import workout_project.settings
+from autoslug import AutoSlugField
 
 User = workout_project.settings.AUTH_USER_MODEL
 
@@ -15,8 +15,9 @@ class ExerciseCategory(models.Model):
         default='',
         help_text="Provide an optional description for this category."
     )
-    slug = models.SlugField(
+    slug = AutoSlugField(
         unique=True,
+        populate_from='name',
         help_text="Unique URL-friendly identifier for this category."
     )
     owner = models.ForeignKey(
@@ -31,14 +32,8 @@ class ExerciseCategory(models.Model):
         verbose_name_plural = 'ExerciseCategories'
         ordering = ['name']
 
-
     def __str__(self):
         return f"{self.name}"
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(f"{self.name}-{self.owner.pk}", allow_unicode=True)
-        return super().save(*args, **kwargs)
 
 
 class Exercise(models.Model):
@@ -69,10 +64,10 @@ class Exercise(models.Model):
         null=True,
         help_text="Provide a URL to instructions or a demonstration video."
     )
-    slug = models.SlugField(
+    slug = AutoSlugField(
         unique=True,
-        help_text="Unique URL-friendly identifier for this exercise."
-    )
+        populate_from='name',
+        help_text="Unique URL-friendly identifier for this exercise.")
 
     class Meta:
         verbose_name = 'Exercise'
@@ -87,11 +82,6 @@ class Exercise(models.Model):
 
     def __str__(self):
         return f"{self.name}-{self.exercise_category.name}"
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(f"{self.name}", allow_unicode=True)
-        return super().save(*args, **kwargs)
 
 
 class TrainingPlan(models.Model):
@@ -122,10 +112,10 @@ class TrainingPlan(models.Model):
         default=AccessStatuses.PUBLIC,
         help_text="Set the access level for this training plan."
     )
-    slug = models.SlugField(
+    slug = AutoSlugField(
         unique=True,
-        help_text="Unique URL-friendly identifier for this training plan."
-    )
+        populate_from='name',
+        help_text="Unique URL-friendly identifier for this exercise.")
 
     class Meta:
         verbose_name = 'TrainingPlan'
@@ -140,11 +130,6 @@ class TrainingPlan(models.Model):
 
     def __str__(self):
         return f"{self.name}"
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(f"{self.name}-{self.owner.username}", allow_unicode=True)
-        return super().save(*args, **kwargs)
 
 
 class TrainingDay(models.Model):
@@ -169,9 +154,10 @@ class TrainingDay(models.Model):
     order = models.PositiveSmallIntegerField(
         help_text="Specify the sequence order of this training day."
     )
-    slug = models.SlugField(
+    slug = AutoSlugField(
         unique=True,
-        help_text="Unique URL-friendly identifier for this training day."
+        populate_from='name',
+        help_text="Unique URL-friendly identifier for this exercise."
     )
     owner = models.ForeignKey(
         to=User,
@@ -203,11 +189,6 @@ class TrainingDay(models.Model):
         if not isinstance(other, TrainingDay):
             return NotImplemented
         return self.order > other.order
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(f"{self.training_plan.name}-{self.order}", allow_unicode=True)
-        return super().save(*args, **kwargs)
 
 
 class DailyExercise(models.Model):

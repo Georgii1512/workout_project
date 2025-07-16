@@ -19,7 +19,7 @@
                 <ul class="list-group">
                     {% for exercise_category in exercise_categories %}
                         <li class="list-group-item list-group-item-action">
-                            <a href="{% url 'workouts:exercise_category_detail' exercise_category.pk %}"
+                            <a href="{% url 'workouts:exercise_category_detail' exercise_category.slug %}"
                                class="link-underline-primary">
                                 <p class="text-dark">
                                     {{ exercise_category.name }}

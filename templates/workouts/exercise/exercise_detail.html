@@ -41,9 +41,9 @@
                             </a>
                             {% if exercise.owner == user %}
                                 <div>
-                                    <a href="{% url 'workouts:exercise_update' exercise.pk %}"
+                                    <a href="{% url 'workouts:exercise_update' exercise.slug %}"
                                        class="btn btn-warning me-2">Edit</a>
-                                    <a href="{% url 'workouts:exercise_delete' exercise.pk %}" class="btn btn-danger">Delete</a>
+                                    <a href="{% url 'workouts:exercise_delete' exercise.slug %}" class="btn btn-danger">Delete</a>
                                 </div>
                             {% endif %}
                         </div>

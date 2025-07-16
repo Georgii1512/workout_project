@@ -14,7 +14,6 @@ class ExerciseCategoryCreateView(mixins.LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.owner = self.request.user  # Set the owner to the current user
-        form.instance.slug = slugify(f"{form.instance.name}-{self.request.user.pk}", allow_unicode=True)  # Generate a slug from the name of the exercise category
         print(form.instance.slug)
 
         return super().form_valid(form)
