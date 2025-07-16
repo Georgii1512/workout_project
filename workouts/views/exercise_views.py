@@ -21,6 +21,27 @@ class ExerciseCreateView(mixins.LoginRequiredMixin, CreateView):
 
         return super().form_valid(form)
 
+    def get_form(self, form_class = forms.ExerciseForm) -> forms.ExerciseForm:
+        """
+        Retrieve and configure the form instance used in the view.
+
+        This method overrides the default behavior to customize the queryset
+        associated with the `exercise_category` field in the `form_class`. It filters
+        the field's queryset to include only `ExerciseCategory` objects that belong
+        to the currently authenticated user.
+
+        :param form_class: The form class to instantiate. Defaults to
+            forms.ExerciseForm.
+        :type form_class: Type[forms.ExerciseForm]
+        :return: A configured instance of the specified form class with updated
+            `exercise_category` queryset.
+        :rtype: forms.ExerciseForm
+        """
+        form: forms.ExerciseForm = super().get_form(form_class)
+        form.fields['exercise_category'].queryset = models.ExerciseCategory.objects.filter(owner=self.request.user)
+
+        return form
+
 
 class ExerciseDeleteView(mixins.LoginRequiredMixin,
                          mixins.UserPassesTestMixin,
