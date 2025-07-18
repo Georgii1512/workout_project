@@ -1,4 +1,4 @@
-from django.views.generic import (CreateView, DetailView, DeleteView, UpdateView)
+from django.views.generic import (CreateView, DetailView, DeleteView, UpdateView, ListView)
 from django.contrib.auth import mixins
 from workouts import forms, models
 from common.mixins import OwnerRequiredMixin
@@ -47,3 +47,10 @@ class TrainingPlanDetailView(OwnerRequiredMixin, DetailView):
     context_object_name = 'training_plan'
     slug_url_kwarg = 'slug'
     slug_field = 'slug'
+
+
+class TrainingPlanListView(mixins.LoginRequiredMixin, ListView):
+    model = models.TrainingPlan
+    template_name = 'workouts/training_plan/training_plans_list.html'
+    context_object_name = 'training_plans'
+    ordering = ['name']
