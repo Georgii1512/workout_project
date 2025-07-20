@@ -10,11 +10,16 @@ class TrainingPlanCreateView(mixins.LoginRequiredMixin, CreateView):
     template_name = 'workouts/training_plan/training_plan_create.html'
     context_object_name = 'training_plan'
     form_class = forms.TrainingPlanForm
-    success_url = reverse_lazy('workouts:training_plans_list')
+    success_url = reverse_lazy('workouts:training_plan_list')
     slug_url_kwarg = 'slug'
     slug_field = 'slug'
 
     def form_valid(self, form):
+        """
+        Automatically set an owner after creating a new training plan.
+        :param form:
+        :return:
+        """
         form.instance.owner = self.request.user
 
         return super().form_valid(form)
@@ -24,7 +29,7 @@ class TrainingPlanDeleteView(OwnerRequiredMixin, DeleteView):
     model = models.TrainingPlan
     template_name = 'workouts/training_plan/training_plan_delete.html'
     context_object_name = 'training_plan'
-    success_url = reverse_lazy('workouts:training_plans_list')
+    success_url = reverse_lazy('workouts:training_plan_list')
     slug_url_kwarg = 'slug'
     slug_field = 'slug'
 

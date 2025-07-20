@@ -30,7 +30,7 @@ class ExerciseForm(ModelForm):
 class TrainingPlanForm(ModelForm):
     class Meta:
         model = TrainingPlan
-        fields = ['name', 'description', 'owner', 'access_status']
+        fields = ['name', 'description', 'access_status']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3}),
         }

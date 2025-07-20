@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ training_plan.name }} details
+{% endblock %}
+{% block content %}
+    <div class="container my-4">
+        <div class="card shadow-sm mx-auto" style="max-width: 720px;">
+            <div class="card-header">
+                <h2 class="mb-0">{{ training_plan.name }}</h2>
+            </div>
+            <div class="card-body">
+                {% if training_plan.description %}
+                    <p class="card-text">{{ training_plan.description }}</p>
+                {% else %}
+                    <p class="text-muted"><em>No description provided.</em></p>
+                {% endif %}
+                <hr>
+                {% if training_plan.owner == user %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'workouts:training_plan_update' training_plan.slug %}"
+                           class="btn btn-warning me-2">Edit</a>
+                        <a href="{% url 'workouts:training_plan_delete' training_plan.slug %}" class="btn btn-danger">
+                            Delete
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
