@@ -18,6 +18,7 @@
         <a class="nav-link active" href="{% url 'index' %}">To main page</a>
         <a class="nav-link active" href="{% url 'workouts:exercises_list' %}">Exercises list</a>
         <a class="nav-link active" href="{% url 'workouts:exercise_categories_list' %}">Exercise categories</a>
+        <a class="nav-link active" href="{% url 'workouts:training_plan_list' %}">Training plans</a>
         {#  Next elements should be added after element with a ms-auto class.  #}
         <a class="nav-link active ms-auto">Hello, {{ user.username|default:"Guest" }}!</a>
         <a class="nav-link active" href="{% url 'admin:index' %}">To admin panel</a>
