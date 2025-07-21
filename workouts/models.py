@@ -135,7 +135,8 @@ class TrainingPlan(models.Model):
 class TrainingDay(models.Model):
     description = models.TextField(
         default='',
-        help_text="Provide a description for this training day."
+        help_text="Provide a description for this training day.",
+        blank=True,
     )
     training_plan = models.ForeignKey(
         to=TrainingPlan,
@@ -154,9 +155,20 @@ class TrainingDay(models.Model):
     order = models.PositiveSmallIntegerField(
         help_text="Specify the sequence order of this training day."
     )
+
+    def get_slug(self):
+        """
+        Return the slug for this training day.
+
+        Use for an AutoSlug.
+        :return: String for an AutoSlug.
+        """
+
+        return f"{self.training_plan.slug}-day-{self.order}"
+
     slug = AutoSlugField(
         unique=True,
-        populate_from='name',
+        populate_from=get_slug,
         help_text="Unique URL-friendly identifier for this exercise."
     )
     owner = models.ForeignKey(
