@@ -39,7 +39,7 @@ class TrainingPlanForm(ModelForm):
 class TrainingDayForm(ModelForm):
     class Meta:
         model = TrainingDay
-        fields = ['description', 'training_plan', 'order']
+        fields = ['description', 'order']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3}),
         }

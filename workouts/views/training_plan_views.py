@@ -53,6 +53,12 @@ class TrainingPlanDetailView(OwnerRequiredMixin, DetailView):
     slug_url_kwarg = 'slug'
     slug_field = 'slug'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['training_days'] = models.TrainingDay.objects.filter(training_plan=self.get_object())
+
+        return context
+
 
 class TrainingPlanListView(mixins.LoginRequiredMixin, ListView):
     model = models.TrainingPlan
