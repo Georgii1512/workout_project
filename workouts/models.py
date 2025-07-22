@@ -5,6 +5,17 @@ from autoslug import AutoSlugField
 User = workout_project.settings.AUTH_USER_MODEL
 
 
+def get_admin_pk():
+    """
+    Return the primary key of the admin user.
+    :return: Integer for the admin user's primary key.
+    """
+    from users import models as user_models
+    admin_pk = user_models.User.objects.get(username='workout_admin').pk
+
+    return admin_pk
+
+
 class ExerciseCategory(models.Model):
     name = models.CharField(
         max_length=100,
@@ -210,6 +221,13 @@ class DailyExercise(models.Model):
         related_name='daily_exercises',
         related_query_name='daily_exercise',
         help_text="Select the exercise for this daily entry."
+    )
+    owner = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='daily_exercises',
+        related_query_name='daily_exercise',
+        default=get_admin_pk,
     )
     day = models.ForeignKey(
         to=TrainingDay,
