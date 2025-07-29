@@ -1,10 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %}
+    {{ daily_exercise.exercise.name }} daily details
+{% endblock %}
+
+{% block content %}
+    <div class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title mb-0"> Day {{ daily_exercise.day.order }},
+                            exercise {{ daily_exercise.order }}, {{ daily_exercise.exercise.name }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <h5 class="text-muted">Category</h5>
+                            <p>{{ daily_exercise.exercise.exercise_category.name }}</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5 class="text-muted">Description</h5>
+                            <p>{{ daily_exercise.exercise.description|default:"No description provided" }}</p>
+                        </div>
+
+                        {% if daily_exercise.exercise.instruction_link %}
+                            <div class="mb-4">
+                                <div class="text-center">
+                                    <iframe width="560" height="315"
+                                            src="{{ instruction_yt_url }}"
+                                            title="YouTube video player"
+                                            allow="fullscreen;">
+                                    </iframe>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="mt-4 d-flex justify-content-between">
+                            <a href="{% url 'workouts:training_day_detail' daily_exercise.day.slug %}" class="btn btn-secondary">
+                                Back
+                            </a>
+                            {% if daily_exercise.owner == user %}
+                                <div>
+                                    <a href="{% url 'workouts:daily_exercise_update' daily_exercise.slug %}"
+                                       class="btn btn-warning me-2">Edit</a>
+                                    <a href="{% url 'workouts:daily_exercise_delete' daily_exercise.slug %}"
+                                       class="btn btn-danger">Delete</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -18,7 +18,7 @@
                         <div class="row justify-content-between">
                             <button type="submit" class="btn btn-danger col-2">Delete</button>
                             <p class="col-2">
-                                <a href="{% url 'workouts:training_plan_delete' training_day.slug %}"
+                                <a href="{% url 'workouts:training_plan_detail' training_day.training_day.slug %}"
                                                 class="link-opacity-100">Cancel</a>
                             </p>
                         </div>

@@ -236,26 +236,37 @@ class DailyExercise(models.Model):
         related_query_name='daily_exercise',
         help_text="Select the training day this exercise is scheduled for."
     )
-    repetitions = models.PositiveSmallIntegerField(
-        help_text="Number of repetitions for this exercise."
+    repeats = models.PositiveSmallIntegerField(
+        help_text="Number of repeats for this exercise.",
     )
-    work_weight = models.DecimalField(
+    work_weight = models.PositiveSmallIntegerField(
         blank=True,
         null=True,
-        max_digits=3,
-        decimal_places=2,
-        help_text="Planned weight to be used for this exercise."
+        help_text="Planned weight to be used for this exercise.",
     )
-    actual_used_weight = models.DecimalField(
+    actual_used_weight = models.PositiveSmallIntegerField(
         blank=True,
         null=True,
-        max_digits=3,
-        decimal_places=2,
-        help_text="Actual weight used during the exercise."
+        help_text="Actual weight used during the exercise.",
     )
     order = models.PositiveSmallIntegerField(
         help_text="Specify the sequence order of this exercise within the day."
     )
+
+    def get_slug(self):
+        """
+        Return the slug for this daily exercise.
+        :return: String for an AutoSlug.
+        """
+
+        return f"{self.day.slug}-{self.order}"
+
+    slug = AutoSlugField(
+        unique=True,
+        populate_from=get_slug,
+        help_text="Unique URL-friendly identifier for this exercise."
+    )
+
 
     class Meta:
         verbose_name = 'DailyExercise'

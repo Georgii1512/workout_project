@@ -48,10 +48,10 @@ class TrainingDayForm(ModelForm):
 class DailyExerciseForm(ModelForm):
     class Meta:
         model = DailyExercise
-        fields = ['exercise', 'day', 'repetitions', 'work_weight', 'actual_used_weight', 'order']
+        fields = ['exercise', 'repeats', 'work_weight', 'actual_used_weight', 'order']
         widgets = {
-            'work_weight': forms.NumberInput(attrs={'step': '0.01'}),
-            'actual_used_weight': forms.NumberInput(attrs={'step': '0.01'}),
+            'work_weight': forms.NumberInput(attrs={'step': '1', 'min': '0'}),
+            'actual_used_weight': forms.NumberInput(attrs={'step': '1', 'min': '0'}),
         }
 
 

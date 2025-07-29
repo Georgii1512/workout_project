@@ -50,3 +50,14 @@ class TrainingDayDetailView(OwnerRequiredMixin, DetailView):
     model = models.TrainingDay
     template_name = 'workouts/training_day/training_day_detail.html'
     context_object_name = 'training_day'
+
+    def get_context_data(self, **kwargs):
+        """
+        Add daily exercises to context.
+        :param kwargs:
+        :return:
+        """
+        context = super().get_context_data(**kwargs)
+        context['daily_exercises'] = models.DailyExercise.objects.filter(day=self.get_object())
+
+        return context

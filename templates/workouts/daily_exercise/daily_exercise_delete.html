@@ -1,10 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %}
+    Delete daily exercise
+{% endblock %}
+
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-6">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <div class="alert alert-danger">
+                        <h2 class="h-2 ">You sure want to delete this daily exercise?</h2>
+                    </div>
+                    <div class="container">
+                        <div class="row justify-content-between">
+                            <button type="submit" class="btn btn-danger col-2">Delete</button>
+                            <p class="col-2">
+                                <a href="{% url 'workouts:training_day_detail' daily_exercise.training_day.slug %}"
+                                   class="link-opacity-100">Cancel</a>
+                            </p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
