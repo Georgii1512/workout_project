@@ -47,7 +47,6 @@ class DailyExerciseDeleteView(LoginRequiredMixin, DeleteView):
     model = models.DailyExercise
     template_name = 'workouts/daily_exercise/daily_exercise_delete.html'
     context_object_name = 'daily_exercise'
-    form_class = forms.DailyExerciseForm
 
     def get_success_url(self):
         """
@@ -69,17 +68,6 @@ class DailyExerciseUpdateView(LoginRequiredMixin, UpdateView):
         :return: Training plan detail view URL.
         """
         return reverse_lazy('workouts:daily_exercise_detail', kwargs={'slug': self.object.slug})
-
-    def form_valid(self, form):
-        """
-        Automatically set an owner and training day after creating a new training day.
-        :param form:
-        :return:
-        """
-        form.instance.owner = self.request.user
-        form.instance.training_day = models.TrainingDay.objects.get(slug=self.kwargs['slug'])
-
-        return super().form_valid(form)
 
 
 class DailyExerciseDetailView(LoginRequiredMixin, DetailView):
