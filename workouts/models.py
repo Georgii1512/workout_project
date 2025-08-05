@@ -42,6 +42,12 @@ class ExerciseCategory(models.Model):
         verbose_name = 'ExerciseCategory'
         verbose_name_plural = 'ExerciseCategories'
         ordering = ['name']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'owner'],
+                name='unique_name_for_owner'
+            )
+        ]
 
     def __str__(self):
         return f"{self.name}"
@@ -86,8 +92,8 @@ class Exercise(models.Model):
         ordering = ['name']
         constraints = [
             models.UniqueConstraint(
-                fields=['name', 'exercise_category', 'instruction_link'],
-                name='unique_for_category'
+                fields=['name', 'exercise_category', 'owner'],
+                name='unique_for_user'
             )
         ]
 
@@ -272,6 +278,12 @@ class DailyExercise(models.Model):
         verbose_name = 'DailyExercise'
         verbose_name_plural = 'DailyExercises'
         ordering = ['order']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['day', 'order'],
+                name='unique_for_day'
+            )
+        ]
 
     def __str__(self):
         return f"Day {self.day.order}, {self.exercise.name}"
